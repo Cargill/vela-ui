@@ -3,11 +3,10 @@
 # name of the action
 name: release
 
-# trigger on push events with `v*` in tag
+# trigger on published github releases
 on:
-  push:
-    tags:
-      - "v*"
+  release:
+    types: [published]
 
 permissions:
   contents: read
@@ -17,7 +16,7 @@ jobs:
   release:
     name: release tagged image
     runs-on: ubuntu-latest
-    if: github.repository == 'Cargill/vela-ui'
+    if: (github.event.release.target_commitish == 'main' || startsWith(github.event.release.target_commitish, 'release/')) && github.repository == 'Cargill/vela-ui'
 
     permissions:
       actions: write # for actions/cache to write to the cache location
@@ -71,8 +70,7 @@ jobs:
         with:
           images: ghcr.io/cargill/vela-ui
           tags: |
-            # only on push tag, "raw" because {{version}} strips "v" prefix
-            # also tags "latest" via the default flavor (latest=auto), excluding pre-releases
+            # semver tag + latest for stable releases
             type=semver,pattern={{raw}}
 
       - name: build and push image
