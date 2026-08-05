@@ -17,9 +17,11 @@ jobs:
   release:
     name: release tagged image
     runs-on: ubuntu-latest
+    if: github.repository == 'Cargill/vela-ui'
 
     permissions:
       actions: write # for actions/cache to write to the cache location
+      packages: write # for publishing the docker image to this github repo's packages
 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -56,19 +58,21 @@ jobs:
       # ┌┬┐┌─┐┌─┐┬┌─┌─┐┬─┐
       #  │││ ││  ├┴┐├┤ ├┬┘
       # ─┴┘└─┘└─┘┴ ┴└─┘┴└─
-      - name: login to dockerhub
-        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4.0.0
+      - name: login to ghcr
+        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: extract metadata
         id: meta
         uses: docker/metadata-action@030e881283bb7a6894de51c315a6bfe6a94e05cf # v6.0.0
         with:
-          images: target/vela-ui
+          images: ghcr.io/cargill/vela-ui
           tags: |
             # only on push tag, "raw" because {{version}} strips "v" prefix
+            # also tags "latest" via the default flavor (latest=auto), excluding pre-releases
             type=semver,pattern={{raw}}
 
       - name: build and push image
