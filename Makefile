@@ -91,42 +91,42 @@ compose-down: ## Destroy all containers for local docker-compose stack
 # /_/--\ |_|   |_|   
 #
 
-# Declare variable to hold location of local npm cache
-NPM_CACHE := $(shell npm get cache)
+# Declare variable to hold location of local pnpm store
+PNPM_STORE := $(shell pnpm store path)
 
 # The `clean` target is intended to clean
-# local NPM and Elm dependencies.
+# local pnpm and Elm dependencies.
 #
 # Usage: `make clean`
 .PHONY: clean
-clean: ## Clean local NPM and Elm dependencies
+clean: ## Clean local pnpm and Elm dependencies
 	@if [ ! -d "./node_modules" ]; \
-		then echo -e "\n### ./node_modules not found - run 'npm install' first"; \
+		then echo -e "\n### ./node_modules not found - run 'pnpm install' first"; \
 		exit 1; \
 		fi
-	@echo -e "\n### Running 'npm run clean'"
-	@npm run clean
+	@echo -e "\n### Running 'pnpm run clean'"
+	@pnpm run clean
 	@echo -e "\n### Removing elm-stuff and node_modules folders"
 	@rm -rf ./{elm-stuff,node_modules} || true
-	@echo "WARNING: the next operation will delete the NPM cache at $(NPM_CACHE) \
+	@echo "WARNING: the next operation will delete the pnpm store at $(PNPM_STORE) \
 	- do you want to continue? (y/N)"
 	@read CONFIRM && \
 	case $$CONFIRM in \
 		y|Y|YES|yes|Yes) \
-			echo "### Removing NPM cache" && \
-			rm -rf "$(NPM_CACHE)" || true;; \
-		*) echo "### Skipping removal of NPM cache";; \
+			echo "### Removing pnpm store" && \
+			rm -rf "$(PNPM_STORE)" || true;; \
+		*) echo "### Skipping removal of pnpm store";; \
 	esac
-	@echo "WARNING: the next operation will delete the package-lock.json file \
+	@echo "WARNING: the next operation will delete the pnpm-lock.yaml file \
 	- do you want to continue (y/N)"
 	@read CONFIRM && \
 	case $$CONFIRM in \
 		y|Y|YES|yes|Yes) \
-			echo "### Removing package-lock.json." && \
-	       	rm ./package-lock.json || true;; \
-		*) echo "### Skipping removal of package-lock.json";; \
+			echo "### Removing pnpm-lock.yaml." && \
+	       	rm ./pnpm-lock.yaml || true;; \
+		*) echo "### Skipping removal of pnpm-lock.yaml";; \
 	esac
-	@echo -e "\n### Nice and shiny; don't forget to run 'npm install'"
+	@echo -e "\n### Nice and shiny; don't forget to run 'pnpm install'"
 
 # The `build` target is intended to build
 # the UI in development mode.
@@ -135,7 +135,7 @@ clean: ## Clean local NPM and Elm dependencies
 .PHONY: build
 build: ## Build the UI in development mode
 	@echo -e "\n### Building UI for development"
-	@npm run build
+	@pnpm run build
 
 # The `build-prod` target is intended to build
 # the UI in production mode.
@@ -144,7 +144,7 @@ build: ## Build the UI in development mode
 .PHONY: build-prod
 build-prod: ## Build the UI in production mode
 	@echo -e "\n### Building UI for production"
-	@npm run build:prod
+	@pnpm run build:prod
 
 # The `test` target is intended to run
 # the tests for the Elm source code.
@@ -162,7 +162,7 @@ test: format-validate ## Test the Elm source code
 .PHONY: test-playwright
 test-playwright: ## Run playwright tests
 	@echo -e "\n### Running playwright tests"
-	@npm run test:cy
+	@pnpm run playwright
 
 # The `format-validate` target is intended to
 # check the format of the Elm source code.
@@ -182,14 +182,14 @@ format: ## Format the Elm source code
 	@echo -e "\n### Formatting Elm source code"
 	@elm-format --yes src/ tests/
 
-# The `bump-deps-npm` target is intended to
-# upgrade the NPM dependencies
+# The `bump-deps-pnpm` target is intended to
+# upgrade the pnpm dependencies
 #
-# Usage: `make bump-deps-npm`
-.PHONY: bump-deps-npm
-bump-deps-npm: ## Bump NPM dependencies
-	@echo -e "\n### Bumping NPM dependencies"
-	@npx npm-check-updates -u
+# Usage: `make bump-deps-pnpm`
+.PHONY: bump-deps-pnpm
+bump-deps-pnpm: ## Bump pnpm dependencies
+	@echo -e "\n### Bumping pnpm dependencies"
+	@pnpm dlx npm-check-updates -u
 
 # The `bump-deps-elm` target is intended to
 # upgrade the Elm dependencies
@@ -198,22 +198,22 @@ bump-deps-npm: ## Bump NPM dependencies
 .PHONY: bump-deps-elm
 bump-deps-elm: ## Bump Elm dependencies
 	@echo -e "\n### Bumping Elm dependencies"
-	@npx elm-json upgrade --yes
+	@pnpm dlx elm-json upgrade --yes
 
 # The `bump-deps` target is intended to
-# upgrade the NPM and Elm dependencies
+# upgrade the pnpm and Elm dependencies
 #
 # Usage: `make bump-deps`
 .PHONY: bump-deps
-bump-deps: clean bump-deps-npm bump-deps-elm ## Bump NPM and Elm dependencies
+bump-deps: clean bump-deps-pnpm bump-deps-elm ## Bump pnpm and Elm dependencies
 	@echo -e "\n### Re-installing dependencies"
-	@npm install
+	@pnpm install
 	@echo -e "\n### Attempting to automagically fix vulnerabilities"
-	@npm audit fix
+	@pnpm audit --fix
 	@echo -e "\n### Dependencies upgraded - enjoy"
 
 # The `bump-deps-test` target is intended to
-# upgrade NPM and Elm dependencies followed
+# upgrade pnpm and Elm dependencies followed
 # by running playwright tests to validate that
 # the dependency upgrades didn't introduce issues.
 #

@@ -11,7 +11,7 @@ This section covers the dependencies required to get the Vela application runnin
 * [Docker](https://docs.docker.com/install/) - building block for local development
 * [Docker Compose](https://docs.docker.com/compose/install/) - start up local development
 * [GitHub OAuth Client](https://developer.github.com/apps/building-oauth-apps/creating-an-oauth-app/) - building block for local development
-* [Node/NPM](https://nodejs.org/en/download/) - for source code and [dependency management](https://nodejs.org/en/knowledge/getting-started/npm/what-is-npm/)
+* [Node](https://nodejs.org/en/download/) and [pnpm](https://pnpm.io/installation) - for source code and dependency management
 * [NVM](https://github.com/nvm-sh/nvm/blob/master/README.md#installing-and-updating) - for managing NodeJS versions
 * [Make](https://www.gnu.org/software/make/) - start up local development
 
@@ -68,20 +68,20 @@ nvm use
 
 ```bash
 # install elm-analyse as a global dependency
-npm i elm-analyse -g
+pnpm add -g elm-analyse
 
 # install elm-format as a global dependency
-npm i elm-format -g
+pnpm add -g elm-format
 
 # install elm-test as a global dependency
-npm i elm-test -g
+pnpm add -g elm-test
 ```
 
 * Install repo dependencies
 
 ```bash
 # install all repo dependencies
-npm install
+pnpm install
 ```
 
 ## Start
@@ -97,7 +97,7 @@ This section covers the commands required to get the Vela application running lo
 cd $HOME/go-vela/ui
 ```
 
-#### NPM
+#### pnpm
 
 This method of running the application enables hot-reloading of the code.
 
@@ -132,7 +132,7 @@ make up
 
 ```bash
 # allows you to make code changes and have the content auto-refresh in the browser
-npm run dev
+pnpm run dev
 ```
 
 * Navigate to the web UI:

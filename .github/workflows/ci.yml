@@ -29,28 +29,16 @@ jobs:
 
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-      - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-npm-v2-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-npm-v2-
-      - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-modules-v2-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-modules-v2-
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version-file: ".nvmrc"
+          cache: pnpm
 
       - name: install dependencies
-        run: npm ci --prefer-offline --no-audit
-      - name: install elm-format
-        run: npm i elm-format@0.8.5
+        run: pnpm install --frozen-lockfile --prefer-offline
       - name: run elm-format
-        run: npm run lint:elm
+        run: pnpm run lint:elm
 
   # ┌─┐┬  ┌┬┐  ┌┬┐┌─┐┌─┐┌┬┐
   # ├┤ │  │││───│ ├┤ └─┐ │
@@ -70,28 +58,16 @@ jobs:
           key: ${{ runner.os }}-elm-v3-${{ hashFiles('**/elm.json') }}
           restore-keys: |
             ${{ runner.os }}-elm-v3-
-      - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-npm-v2-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-npm-v2-
-      - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-modules-v2-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-modules-v2-
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version-file: ".nvmrc"
+          cache: pnpm
 
       - name: install dependencies
-        run: npm ci --prefer-offline --no-audit
-      - name: install elm-test
-        run: npm i elm-test@0.19.2-0
+        run: pnpm install --frozen-lockfile --prefer-offline
       - name: run elm-test
-        run: npm run test
+        run: pnpm run test
 
   # ┬  ┬┌┐┌┌┬┐
   # │  ││││ │
@@ -105,26 +81,16 @@ jobs:
 
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-      - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-npm-v2-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-npm-v2-
-      - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-modules-v2-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-modules-v2-
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version-file: ".nvmrc"
+          cache: pnpm
 
       - name: install dependencies
-        run: npm ci --prefer-offline --no-audit
+        run: pnpm install --frozen-lockfile --prefer-offline
       - name: run linter
-        run: npm run lint
+        run: pnpm run lint
 
   # ┌─┐┬ ┬┌┐ ┬  ┬┌─┐┬ ┬
   # ├─┘│ │├┴┐│  │└─┐├─┤
@@ -147,29 +113,19 @@ jobs:
           key: ${{ runner.os }}-elm-v3-${{ hashFiles('**/elm.json') }}
           restore-keys: |
             ${{ runner.os }}-elm-v3-
-      - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-npm-v2-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-npm-v2-
-      - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-modules-v2-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-modules-v2-
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version-file: ".nvmrc"
+          cache: pnpm
 
       # ┌┐ ┬ ┬┬┬  ┌┬┐
       # ├┴┐│ │││   ││
       # └─┘└─┘┴┴─┘─┴┘
       - name: install dependencies
-        run: npm ci --prefer-offline --no-audit
+        run: pnpm install --frozen-lockfile --prefer-offline
       - name: run development build
-        run: npm run build
+        run: pnpm run build
 
       # ┌┬┐┌─┐┌─┐┬┌─┌─┐┬─┐
       #  │││ ││  ├┴┐├┤ ├┬┘
