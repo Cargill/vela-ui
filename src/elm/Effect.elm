@@ -9,7 +9,7 @@ module Effect exposing
     , sendCmd, sendMsg
     , pushRoute, replaceRoute, loadExternalUrl
     , map, toCmd
-    , addAlertError, addAlertSuccess, addDeployment, addFavorites, addOrgSecret, addRepoSchedule, addRepoSecret, addSharedSecret, alertsUpdate, approveBuild, cancelBuild, chownRepo, clearRedirect, deleteOrgSecret, deleteRepoSchedule, deleteRepoSecret, deleteSharedSecret, disableRepo, downloadFile, enableRepo, expandPipelineConfig, finishAuthentication, focusOn, getAllBuildServices, getAllBuildSteps, getAllBuilds, getBuild, getBuildArtifacts, getBuildGraph, getBuildServiceLog, getBuildServices, getBuildStepLog, getBuildSteps, getCurrentUser, getCurrentUserShared, getDashboard, getDashboards, getDeploymentConfig, getOrgBuilds, getOrgRepos, getOrgSecret, getOrgSecrets, getPipelineConfig, getPipelineTemplates, getRepo, getRepoBuilds, getRepoBuildsShared, getRepoDeployments, getRepoHooks, getRepoHooksShared, getRepoSchedule, getRepoSchedules, getRepoSecret, getRepoSecrets, getSettings, getSharedSecret, getSharedSecrets, getWorkers, handleHttpError, logout, pushPath, redeliverHook, repairRepo, replacePath, replaceRouteRemoveTabHistorySkipDomFocus, restartBuild, setRedirect, setTheme, updateFavicon, updateFavorite, updateOrgSecret, updateRepo, updateRepoBuildsShared, updateRepoHooksShared, updateRepoSchedule, updateRepoSecret, updateSettings, updateSharedSecret, updateSourceReposShared
+    , addAlertError, addAlertSuccess, addDeployment, addFavorites, addOrgSecret, addRepoSchedule, addRepoSecret, addSharedSecret, alertsUpdate, approveBuild, cancelBuild, chownRepo, clearRedirect, deleteOrgBuildLimit, deleteOrgSecret, deleteRepoSchedule, deleteRepoSecret, deleteSharedSecret, disableRepo, downloadFile, enableRepo, expandPipelineConfig, finishAuthentication, focusOn, getAllBuildServices, getAllBuildSteps, getAllBuilds, getBuild, getBuildArtifacts, getBuildGraph, getBuildServiceLog, getBuildServices, getBuildStepLog, getBuildSteps, getCurrentUser, getCurrentUserShared, getDashboard, getDashboards, getDeploymentConfig, getOrgBuildLimit, getOrgBuilds, getOrgRepos, getOrgSecret, getOrgSecrets, getPipelineConfig, getPipelineTemplates, getRepo, getRepoBuilds, getRepoBuildsShared, getRepoDeployments, getRepoHooks, getRepoHooksShared, getRepoSchedule, getRepoSchedules, getRepoSecret, getRepoSecrets, getSettings, getSharedSecret, getSharedSecrets, getWorkers, handleHttpError, logout, pushPath, redeliverHook, repairRepo, replacePath, replaceRouteRemoveTabHistorySkipDomFocus, restartBuild, setRedirect, setTheme, updateFavicon, updateFavorite, updateOrgBuildLimit, updateOrgSecret, updateRepo, updateRepoBuildsShared, updateRepoHooksShared, updateRepoSchedule, updateRepoSecret, updateSettings, updateSharedSecret, updateSourceReposShared
     )
 
 {-|
@@ -506,6 +506,61 @@ getSettings options =
     Api.try
         options.onResponse
         (Api.Operations.getSettings
+            options.baseUrl
+            options.session
+            options
+        )
+        |> sendCmd
+
+
+getOrgBuildLimit :
+    { baseUrl : String
+    , session : Auth.Session.Session
+    , onResponse : Result (Http.Detailed.Error String) ( Http.Metadata, Vela.OrgBuildLimit ) -> msg
+    , org : String
+    }
+    -> Effect msg
+getOrgBuildLimit options =
+    Api.try
+        options.onResponse
+        (Api.Operations.getOrgBuildLimit
+            options.baseUrl
+            options.session
+            options
+        )
+        |> sendCmd
+
+
+updateOrgBuildLimit :
+    { baseUrl : String
+    , session : Auth.Session.Session
+    , onResponse : Result (Http.Detailed.Error String) ( Http.Metadata, Vela.OrgBuildLimit ) -> msg
+    , org : String
+    , body : Http.Body
+    }
+    -> Effect msg
+updateOrgBuildLimit options =
+    Api.try
+        options.onResponse
+        (Api.Operations.updateOrgBuildLimit
+            options.baseUrl
+            options.session
+            options
+        )
+        |> sendCmd
+
+
+deleteOrgBuildLimit :
+    { baseUrl : String
+    , session : Auth.Session.Session
+    , onResponse : Result (Http.Detailed.Error String) ( Http.Metadata, String ) -> msg
+    , org : String
+    }
+    -> Effect msg
+deleteOrgBuildLimit options =
+    Api.tryString
+        options.onResponse
+        (Api.Operations.deleteOrgBuildLimit
             options.baseUrl
             options.session
             options

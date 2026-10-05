@@ -33,6 +33,7 @@ import Pages.Account.Login
 import Pages.Account.Logout
 import Pages.Account.Settings
 import Pages.Account.SourceRepos
+import Pages.Admin.BuildLimits
 import Pages.Admin.Settings
 import Pages.Dash.Secrets.Engine_.Org.Org_
 import Pages.Dash.Secrets.Engine_.Org.Org_.Add
@@ -678,6 +679,30 @@ initPageAndLayout model =
                     , layout =
                         Page.layout pageModel page
                             |> Maybe.map (Layouts.map (Main.Pages.Msg.Account_SourceRepos >> Page))
+                            |> Maybe.map (initLayout model)
+                    }
+                )
+
+        Route.Path.Admin_BuildLimits ->
+            runWhenAuthenticatedWithLayout
+                model
+                (\user ->
+                    let
+                        page : Page.Page Pages.Admin.BuildLimits.Model Pages.Admin.BuildLimits.Msg
+                        page =
+                            Pages.Admin.BuildLimits.page user model.shared (Route.fromUrl () model.url)
+
+                        ( pageModel, pageEffect ) =
+                            Page.init page ()
+                    in
+                    { page =
+                        Tuple.mapBoth
+                            Main.Pages.Model.Admin_BuildLimits
+                            (Effect.map Main.Pages.Msg.Admin_BuildLimits >> fromPageEffect model)
+                            ( pageModel, pageEffect )
+                    , layout =
+                        Page.layout pageModel page
+                            |> Maybe.map (Layouts.map (Main.Pages.Msg.Admin_BuildLimits >> Page))
                             |> Maybe.map (initLayout model)
                     }
                 )
@@ -1710,6 +1735,16 @@ updateFromPage msg model =
                         (Page.update (Pages.Account.SourceRepos.page user model.shared (Route.fromUrl () model.url)) pageMsg pageModel)
                 )
 
+        ( Main.Pages.Msg.Admin_BuildLimits pageMsg, Main.Pages.Model.Admin_BuildLimits pageModel ) ->
+            runWhenAuthenticated
+                model
+                (\user ->
+                    Tuple.mapBoth
+                        Main.Pages.Model.Admin_BuildLimits
+                        (Effect.map Main.Pages.Msg.Admin_BuildLimits >> fromPageEffect model)
+                        (Page.update (Pages.Admin.BuildLimits.page user model.shared (Route.fromUrl () model.url)) pageMsg pageModel)
+                )
+
         ( Main.Pages.Msg.Admin_Settings pageMsg, Main.Pages.Model.Admin_Settings pageModel ) ->
             runWhenAuthenticated
                 model
@@ -2151,6 +2186,12 @@ toLayoutFromPage model =
                 |> Maybe.andThen (Page.layout pageModel)
                 |> Maybe.map (Layouts.map (Main.Pages.Msg.Account_SourceRepos >> Page))
 
+        Main.Pages.Model.Admin_BuildLimits pageModel ->
+            Route.fromUrl () model.url
+                |> toAuthProtectedPage model Pages.Admin.BuildLimits.page
+                |> Maybe.andThen (Page.layout pageModel)
+                |> Maybe.map (Layouts.map (Main.Pages.Msg.Admin_BuildLimits >> Page))
+
         Main.Pages.Model.Admin_Settings pageModel ->
             Route.fromUrl () model.url
                 |> toAuthProtectedPage model Pages.Admin.Settings.page
@@ -2426,6 +2467,15 @@ subscriptions model =
                         (\user ->
                             Page.subscriptions (Pages.Account.SourceRepos.page user model.shared (Route.fromUrl () model.url)) pageModel
                                 |> Sub.map Main.Pages.Msg.Account_SourceRepos
+                                |> Sub.map Page
+                        )
+                        (Auth.onPageLoad model.shared (Route.fromUrl () model.url))
+
+                Main.Pages.Model.Admin_BuildLimits pageModel ->
+                    Auth.Action.subscriptions
+                        (\user ->
+                            Page.subscriptions (Pages.Admin.BuildLimits.page user model.shared (Route.fromUrl () model.url)) pageModel
+                                |> Sub.map Main.Pages.Msg.Admin_BuildLimits
                                 |> Sub.map Page
                         )
                         (Auth.onPageLoad model.shared (Route.fromUrl () model.url))
@@ -2958,6 +3008,15 @@ viewPage model =
                 )
                 (Auth.onPageLoad model.shared (Route.fromUrl () model.url))
 
+        Main.Pages.Model.Admin_BuildLimits pageModel ->
+            Auth.Action.view (View.map never (Auth.viewCustomPage model.shared (Route.fromUrl () model.url)))
+                (\user ->
+                    Page.view (Pages.Admin.BuildLimits.page user model.shared (Route.fromUrl () model.url)) pageModel
+                        |> View.map Main.Pages.Msg.Admin_BuildLimits
+                        |> View.map Page
+                )
+                (Auth.onPageLoad model.shared (Route.fromUrl () model.url))
+
         Main.Pages.Model.Admin_Settings pageModel ->
             Auth.Action.view (View.map never (Auth.viewCustomPage model.shared (Route.fromUrl () model.url)))
                 (\user ->
@@ -3341,6 +3400,16 @@ toPageUrlHookCmd model routes =
                 (\user ->
                     Page.toUrlMessages routes (Pages.Account.SourceRepos.page user model.shared (Route.fromUrl () model.url))
                         |> List.map Main.Pages.Msg.Account_SourceRepos
+                        |> List.map Page
+                        |> toCommands
+                )
+                (Auth.onPageLoad model.shared (Route.fromUrl () model.url))
+
+        Main.Pages.Model.Admin_BuildLimits pageModel ->
+            Auth.Action.command
+                (\user ->
+                    Page.toUrlMessages routes (Pages.Admin.BuildLimits.page user model.shared (Route.fromUrl () model.url))
+                        |> List.map Main.Pages.Msg.Admin_BuildLimits
                         |> List.map Page
                         |> toCommands
                 )
@@ -3821,6 +3890,9 @@ isAuthProtected routePath =
             True
 
         Route.Path.Account_SourceRepos ->
+            True
+
+        Route.Path.Admin_BuildLimits ->
             True
 
         Route.Path.Admin_Settings ->

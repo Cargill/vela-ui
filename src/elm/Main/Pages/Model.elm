@@ -10,6 +10,7 @@ import Pages.Account.Login
 import Pages.Account.Logout
 import Pages.Account.Settings
 import Pages.Account.SourceRepos
+import Pages.Admin.BuildLimits
 import Pages.Admin.Settings
 import Pages.Dash.Secrets.Engine_.Org.Org_
 import Pages.Dash.Secrets.Engine_.Org.Org_.Add
@@ -53,6 +54,7 @@ type Model
     | Account_Logout Pages.Account.Logout.Model
     | Account_Settings Pages.Account.Settings.Model
     | Account_SourceRepos Pages.Account.SourceRepos.Model
+    | Admin_BuildLimits Pages.Admin.BuildLimits.Model
     | Admin_Settings Pages.Admin.Settings.Model
     | Dash_Secrets_Engine__Org_Org_ { engine : String, org : String } Pages.Dash.Secrets.Engine_.Org.Org_.Model
     | Dash_Secrets_Engine__Org_Org__Add { engine : String, org : String } Pages.Dash.Secrets.Engine_.Org.Org_.Add.Model

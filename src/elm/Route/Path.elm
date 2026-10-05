@@ -19,6 +19,7 @@ type Path
     | Account_Logout
     | Account_Settings
     | Account_SourceRepos
+    | Admin_BuildLimits
     | Admin_Settings
     | Dash_Secrets_Engine__Org_Org_ { engine : String, org : String }
     | Dash_Secrets_Engine__Org_Org__Add { engine : String, org : String }
@@ -96,6 +97,9 @@ fromString urlPath =
 
         "account" :: "source-repos" :: [] ->
             Just Account_SourceRepos
+
+        "admin" :: "build-limits" :: [] ->
+            Just Admin_BuildLimits
 
         "admin" :: "settings" :: [] ->
             Just Admin_Settings
@@ -350,6 +354,9 @@ toString path =
 
                 Account_SourceRepos ->
                     [ "account", "source-repos" ]
+
+                Admin_BuildLimits ->
+                    [ "admin", "build-limits" ]
 
                 Admin_Settings ->
                     [ "admin", "settings" ]

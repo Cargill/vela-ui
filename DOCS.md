@@ -277,13 +277,5 @@ This component is used for storing data at rest.
 
 For more information, please review [the official documentation](https://www.postgresql.org/).
 
-### Vault
-
-The `vault` Docker compose service hosts the HashiCorp Vault instance.
-
-This component is used for storing sensitive data like secrets.
-
-For more information, please review [the official documentation](https://www.vaultproject.io/).
-
 </p>
 </details>

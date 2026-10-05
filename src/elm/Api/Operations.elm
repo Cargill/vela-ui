@@ -12,6 +12,7 @@ module Api.Operations exposing
     , approveBuild
     , cancelBuild
     , chownRepo
+    , deleteOrgBuildLimit
     , deleteOrgSecret
     , deleteRepoSchedule
     , deleteRepoSecret
@@ -34,6 +35,7 @@ module Api.Operations exposing
     , getDashboard
     , getDashboards
     , getDeploymentConfig
+    , getOrgBuildLimit
     , getOrgBuilds
     , getOrgRepos
     , getOrgSecret
@@ -59,6 +61,7 @@ module Api.Operations exposing
     , repairRepo
     , restartBuild
     , updateCurrentUser
+    , updateOrgBuildLimit
     , updateOrgSecret
     , updateRepo
     , updateRepoSchedule
@@ -330,6 +333,49 @@ getSettings baseUrl session _ =
     get baseUrl
         Api.Endpoint.Settings
         Vela.decodeSettings
+        |> withAuth session
+
+
+{-| getOrgBuildLimit : retrieves the build limit for an org.
+-}
+getOrgBuildLimit :
+    String
+    -> Session
+    -> { a | org : String }
+    -> Request Vela.OrgBuildLimit
+getOrgBuildLimit baseUrl session options =
+    get baseUrl
+        (Api.Endpoint.OrgBuildLimit options.org)
+        Vela.decodeOrgBuildLimit
+        |> withAuth session
+
+
+{-| updateOrgBuildLimit : sets the build limit for an org.
+-}
+updateOrgBuildLimit :
+    String
+    -> Session
+    -> { a | org : String, body : Http.Body }
+    -> Request Vela.OrgBuildLimit
+updateOrgBuildLimit baseUrl session options =
+    put baseUrl
+        (Api.Endpoint.OrgBuildLimit options.org)
+        options.body
+        Vela.decodeOrgBuildLimit
+        |> withAuth session
+
+
+{-| deleteOrgBuildLimit : removes the build limit override for an org.
+-}
+deleteOrgBuildLimit :
+    String
+    -> Session
+    -> { a | org : String }
+    -> Request String
+deleteOrgBuildLimit baseUrl session options =
+    delete baseUrl
+        (Api.Endpoint.OrgBuildLimit options.org)
+        Json.Decode.string
         |> withAuth session
 
 
