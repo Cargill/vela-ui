@@ -14,7 +14,7 @@ export default defineConfig({
   reporter: [['list'], ['html', { open: 'never' }]],
   outputDir: 'playwright-results',
   webServer: {
-    command: 'npm run start',
+    command: 'pnpm run start',
     url: 'http://localhost:8888',
     reuseExistingServer: !process.env.CI,
     env: {

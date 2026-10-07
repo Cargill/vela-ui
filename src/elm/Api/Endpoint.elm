@@ -61,6 +61,7 @@ type Endpoint
     | StorageBuildArtifacts Vela.Org Vela.Repo Vela.BuildNumber
     | Workers (Maybe Pagination.Page) (Maybe Pagination.PerPage)
     | Settings
+    | OrgBuildLimit Vela.Org
 
 
 {-| toUrl : turns and Endpoint into a URL string.
@@ -191,6 +192,9 @@ toUrl api endpoint =
 
         Settings ->
             url api [ "admin", "settings" ] []
+
+        OrgBuildLimit org ->
+            url api [ "orgs", org, "limit" ] []
 
 
 {-| url : creates a URL string with the given path segments and query parameters.

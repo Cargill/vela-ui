@@ -43,6 +43,8 @@ export const repoEnablePattern = /\/api\/v1\/repos(\/[^/]+\/[^/]+)?\/?(\?.*)?$/;
 
 export const adminSettingsPattern = /\/api\/v1\/admin\/settings(\?.*)?$/;
 
+export const orgBuildLimitPattern = /\/api\/v1\/orgs\/[^/]+\/limit(\?.*)?$/;
+
 export const secretsListPattern =
   /\/api\/v1\/secrets\/[^/]+\/[^/]+\/[^/]+\/[^/]+(\?.*)?$/;
 

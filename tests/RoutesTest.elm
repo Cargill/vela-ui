@@ -3,7 +3,7 @@ SPDX-License-Identifier: Apache-2.0
 --}
 
 
-module RoutesTest exposing (testApiSecretEndpointEncoding, testHref, testMatch, testPathFromString, testPathFromStringFullUrl, testPathFromStringNoScheme, testPathFromStringWithHash, testPathFromStringWithQuery, testPathFromStringWithQueryAndHash, testRepoPathDecoding, testRepoPathEncoding, testRouteToUrl, testSecretsPathDecoding, testSecretsPathEncoding)
+module RoutesTest exposing (testApiOrgBuildLimitEndpointEncoding, testApiSecretEndpointEncoding, testHref, testMatch, testPathFromString, testPathFromStringFullUrl, testPathFromStringNoScheme, testPathFromStringWithHash, testPathFromStringWithQuery, testPathFromStringWithQueryAndHash, testRepoPathDecoding, testRepoPathEncoding, testRouteToUrl, testSecretsPathDecoding, testSecretsPathEncoding)
 
 import Api.Endpoint
 import Expect
@@ -33,6 +33,7 @@ testMatch : Test
 testMatch =
     describe "route gets matched as intended for given url"
         [ testUrl "/account/login" Route.Path.Account_Login
+        , testUrl "/admin/build-limits" Route.Path.Admin_BuildLimits
         , testUrl "/asdf" (Route.Path.Org_ { org = "asdf" })
         , testUrl "/my-org/builds" (Route.Path.Org__Builds { org = "my-org" })
         , testUrl "/" Route.Path.Home_
@@ -295,3 +296,12 @@ testApiSecretEndpointEncoding =
             Api.Endpoint.toUrl "http://localhost:8080"
                 (Api.Endpoint.Secret "native" "repo" "my-org" "my-repo" "secret#hash")
                 |> Expect.equal "http://localhost:8080/api/v1/secrets/native/repo/my-org/my-repo/secret%23hash"
+
+
+testApiOrgBuildLimitEndpointEncoding : Test
+testApiOrgBuildLimitEndpointEncoding =
+    test "API org build limit endpoint encodes org" <|
+        \_ ->
+            Api.Endpoint.toUrl "http://localhost:8080"
+                (Api.Endpoint.OrgBuildLimit "my org#1")
+                |> Expect.equal "http://localhost:8080/api/v1/orgs/my%20org%231/limit"

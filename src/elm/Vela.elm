@@ -32,6 +32,7 @@ module Vela exposing
     , Log
     , Name
     , Org
+    , OrgBuildLimit
     , PipelineConfig
     , PlatformSettings
     , PlatformSettingsFieldUpdate(..)
@@ -77,6 +78,7 @@ module Vela exposing
     , decodeImageRestriction
     , decodeLog
     , decodeOnGraphInteraction
+    , decodeOrgBuildLimit
     , decodePipelineConfig
     , decodePipelineExpand
     , decodePipelineTemplates
@@ -111,6 +113,7 @@ module Vela exposing
     , encodeDeploymentPayload
     , encodeEnableRepository
     , encodeImageRestriction
+    , encodeOrgBuildLimitPayload
     , encodeRepoPayload
     , encodeSchedulePayload
     , encodeSecretPayload
@@ -2212,6 +2215,7 @@ type alias PlatformSettings =
     , enableOrgSecrets : Bool
     , enableRepoSecrets : Bool
     , enableSharedSecrets : Bool
+    , enableOrgBuildLimit : Bool
     , createdAt : Int
     , updatedAt : Int
     , updatedBy : String
@@ -2232,9 +2236,43 @@ decodeSettings =
         |> optional "enable_org_secrets" bool True
         |> optional "enable_repo_secrets" bool True
         |> optional "enable_shared_secrets" bool True
+        |> optional "enable_org_build_limit" bool False
         |> required "created_at" int
         |> required "updated_at" int
         |> required "updated_by" string
+
+
+{-| OrgBuildLimit : the concurrent build limit for an organization.
+
+`id` is Nothing when the organization has no override and the server default applies.
+
+-}
+type alias OrgBuildLimit =
+    { id : Maybe Int
+    , org : String
+    , buildLimit : Int
+    , createdAt : Int
+    , updatedAt : Int
+    , updatedBy : String
+    }
+
+
+decodeOrgBuildLimit : Decoder OrgBuildLimit
+decodeOrgBuildLimit =
+    Json.Decode.succeed OrgBuildLimit
+        |> optional "id" (Json.Decode.nullable int) Nothing
+        |> optional "org" string ""
+        |> required "build_limit" int
+        |> optional "created_at" int 0
+        |> optional "updated_at" int 0
+        |> optional "updated_by" string ""
+
+
+encodeOrgBuildLimitPayload : Int -> Json.Encode.Value
+encodeOrgBuildLimitPayload limit =
+    Json.Encode.object
+        [ ( "build_limit", Json.Encode.int limit )
+        ]
 
 
 type alias Compiler =

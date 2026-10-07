@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "Vela UI",
   "author": "Vela Team",
+  "packageManager": "pnpm@10.33.4",
   "engines": {
     "node": ">=24"
   },
@@ -38,22 +39,32 @@
     "stylelint-order": "8.1.1",
     "stylelint-scss": "7.2.0"
   },
-  "overrides": {
-    "form-data": "4.0.6",
-    "cross-spawn": "7.0.6",
-    "elm": "0.19.2-0"
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@parcel/watcher",
+      "@swc/core",
+      "elm",
+      "elm-format",
+      "lmdb",
+      "msgpackr-extract"
+    ],
+    "overrides": {
+      "form-data": "4.0.6",
+      "cross-spawn": "7.0.6",
+      "elm": "0.19.2-0"
+    }
   },
   "scripts": {
-    "predev": "npm run clean",
-    "dev": "npm run start",
-    "prestart": "npm run clean",
-    "start": "npm run copy:static && parcel src/static/index.html --port 8888",
-    "prebuild": "npm run clean",
+    "predev": "pnpm run clean",
+    "dev": "pnpm run start",
+    "prestart": "pnpm run clean",
+    "start": "pnpm run copy:static && parcel src/static/index.html --port 8888",
+    "prebuild": "pnpm run clean",
     "build": "parcel build src/static/index.html --no-optimize --detailed-report",
-    "postbuild": "npm run copy:static",
-    "prebuild:prod": "npm run clean",
+    "postbuild": "pnpm run copy:static",
+    "prebuild:prod": "pnpm run clean",
     "build:prod": "parcel build src/static/index.html --no-cache --detailed-report",
-    "postbuild:prod": "npm run copy:static",
+    "postbuild:prod": "pnpm run copy:static",
     "copy:static": "make-dir ./dist && ncp ./src/static/images ./dist/images",
     "test": "elm-test",
     "test:watch": "elm-test --watch",
@@ -61,13 +72,13 @@
     "playwright:ui": "playwright test --ui",
     "clean": "rimraf ./.parcel-cache ./.cache ./dist",
     "lint:prettier": "prettier --check '**/*.{js,json,ts,scss,html}'",
-    "lint:prettier-fix": "npm run lint:prettier -- --write",
+    "lint:prettier-fix": "ppnpm run lint:prettier --write",
     "lint:css": "stylelint --cache --cache-location 'node_modules/' 'src/scss/**/*.scss'",
-    "lint:css-fix": "npm run lint:css -- --fix",
+    "lint:css-fix": "ppnpm run lint:css --fix",
     "lint:elm": "elm-format --validate src/ tests/",
     "lint:elm-fix": "elm-format --yes src/ tests/",
-    "lint:fix": "npm run lint:css-fix && npm run lint:prettier-fix",
-    "lint": "npm run lint:css && npm run lint:prettier"
+    "lint:fix": "pnpm run lint:css-fix && pnpm run lint:prettier-fix",
+    "lint": "pnpm run lint:css && pnpm run lint:prettier"
   },
   "repository": {
     "type": "git",

@@ -357,6 +357,11 @@ viewAdminTabs shared props =
               , isAlerting = False
               , show = True
               }
+            , { name = "Build Limits"
+              , toPath = Route.Path.Admin_BuildLimits
+              , isAlerting = False
+              , show = True
+              }
             ]
     in
     view props.tabHistory props.currentPath tabs "jump-bar-admin"
